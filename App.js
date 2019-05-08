@@ -3,8 +3,12 @@ import React, { Component } from 'react';
 import {
     Dimensions,
     Platform,
-    Keyboard } from 'react-native';
+    Keyboard,
+    AsyncStorage
+} from 'react-native';
+import {AppLoading} from 'expo';
 import styled, { css } from 'styled-components/native';
+import uuidv1 from "uuid/v1";
 
 const { height, width } = Dimensions.get('window');
 
@@ -33,7 +37,7 @@ const CardView = styled.View`
     })}
 `;
 
-const NewTodoTextInput = styled.TextInput`
+const NewToDoTextInput = styled.TextInput`
     padding: 20px;
     border-bottom-color: #bbb;
     border-bottom-width: 1px;
@@ -42,47 +46,103 @@ const NewTodoTextInput = styled.TextInput`
 
 const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
+const KeyBoardAvoidingView = styled.KeyboardAvoidingView``;
+const ScrollView = styled.ScrollView``;
+const TitleText = styled.Text`
+    margin-top: 50px;
+    margin-bottom: 30px;
+    font-size: 30px;
+    color: white;
+    font-weight: 200;
+`;
+
 export default class App extends Component {
-    state = {
-        newTodo : ''
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            newToDo: '',
+            loadedToDos: false
+        };
+    }
+
+    componentDidMount() {
+        this._loadToDos();
+    }
+
+    render() {
+        const { newToDo, loadedToDos } = this.state;
+        console.log(this.state);
+        if (!loadedToDos) {
+            return <AppLoading />;
+        }
+        return (
+            <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
+                <ContainerView>
+                    <StatusBar barStyle={'light-content'} />
+                    <TitleText>React-native To Do</TitleText> 
+                    <CardView>
+                        <NewToDoTextInput 
+                            value={newToDo}
+                            placeholderTextColor={'#999'}
+                            placeholder={'New To Do'}
+                            returnKeyType={'done'}
+                            blurOnSubmit={true}
+                            onChangeText={this._controllNewToDo}
+                            onSubmitEditing={this._addToDo}
+                        />
+                        <KeyBoardAvoidingView>
+                            <ScrollView />
+                        </KeyBoardAvoidingView>        
+                    </CardView>
+                </ContainerView>
+            </TouchableWithoutFeedback>
+        );
+    }
 
     _dismissKeyboard = () => {
         Keyboard.dismiss();
     };
 
-    _controllNewTodo = (text) => {
+    _controllNewToDo = (text) => {
         this.setState({
-            newTodo: text
+        newToDo: text
         });
     };
 
-    _addTodo = () => {
+    _addToDo = () => {
+        const { newToDo } = this.state;
+        let newState;
         this._dismissKeyboard();
-        this.setState({
-            newTodo: ''
-        })
-    }
+        this.setState(prevState => {
+            const newToDoObject = {
+                id: uuidv1(),
+                isCompleted: false,
+                text: newToDo
+            };
+            newState = {
+                ...prevState,
+                toDos: [...prevState.toDos, newToDoObject],
+                newToDo: ""
+            };
+            const saveState = AsyncStorage.setItem(
+                "toDos",
+                JSON.stringify(newState.toDos)
+            );
+            
+            return { ...newState };
+        });
+    };
 
-  render() {
-    const { newTodo } = this.state;
-    return (
-        <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
-            <ContainerView>
-                <StatusBar barStyle={'light-content'} />
-                <CardView>
-                    <NewTodoTextInput 
-                        value={newTodo}
-                        placeholderTextColor={'#999'}
-                        placeholder={'New To Do'}
-                        returnKeyType={'done'}
-                        blurOnSubmit={true}
-                        onChangeText={this._controllNewTodo}
-                        onEndEditing={this._addToDo}
-                    />        
-                </CardView>
-            </ContainerView>
-        </TouchableWithoutFeedback>
-    );
-  }
+    _loadToDos = async () => {
+        try {
+            const toDos = (await AsyncStorage.getItem("toDos")) || JSON.stringify([]);
+            const parsedToDos = JSON.parse(toDos);
+            this.setState({
+                loadedToDos: true,
+                toDos: parsedToDos
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }
