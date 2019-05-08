@@ -43,17 +43,43 @@ const NewTodoTextInput = styled.TextInput`
 const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
 
 export default class App extends Component {
+    state = {
+        newTodo : ''
+    };
+
     _dismissKeyboard = () => {
         Keyboard.dismiss();
     };
 
+    _controllNewTodo = (text) => {
+        this.setState({
+            newTodo: text
+        });
+    };
+
+    _addTodo = () => {
+        this._dismissKeyboard();
+        this.setState({
+            newTodo: ''
+        })
+    }
+
   render() {
+    const { newTodo } = this.state;
     return (
         <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
             <ContainerView>
-                <StatusBar barStyle="light-content" />
+                <StatusBar barStyle={'light-content'} />
                 <CardView>
-                    <NewTodoTextInput />        
+                    <NewTodoTextInput 
+                        value={newTodo}
+                        placeholderTextColor={'#999'}
+                        placeholder={'New To Do'}
+                        returnKeyType={'done'}
+                        blurOnSubmit={true}
+                        onChangeText={this._controllNewTodo}
+                        onEndEditing={this._addToDo}
+                    />        
                 </CardView>
             </ContainerView>
         </TouchableWithoutFeedback>
