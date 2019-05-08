@@ -1,21 +1,62 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+// import { StyleSheet, Text, View } from 'react-native';
+import {
+    Dimensions,
+    Platform,
+    Keyboard } from 'react-native';
+import styled, { css } from 'styled-components/native';
 
-export default class App extends React.Component {
+const { height, width } = Dimensions.get('window');
+
+const ContainerView = styled.View`
+    flex: 1;
+    background-color: #f23657;
+    align-items: center;
+    justify-content: center;
+`
+const StatusBar = styled.StatusBar``;
+
+const CardView = styled.View`
+    flex: 1;
+    width: ${width - 50};
+    background-color: white;
+    margin-top: 50;
+    border-top-left-radius: 10;
+    border-top-right-radius: 10;
+    ${Platform.select({
+        ios: css`
+        box-shadow: 0px -1px 5px rgba(50,50,50,0.5);
+        `,
+        android: {
+            elevation:3
+        }
+    })}
+`;
+
+const NewTodoTextInput = styled.TextInput`
+    padding: 20px;
+    border-bottom-color: #bbb;
+    border-bottom-width: 1px;
+    font-size: 20px;
+`;
+
+const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
+
+export default class App extends Component {
+    _dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+        <TouchableWithoutFeedback onPress={this._dismissKeyboard}>
+            <ContainerView>
+                <StatusBar barStyle="light-content" />
+                <CardView>
+                    <NewTodoTextInput />        
+                </CardView>
+            </ContainerView>
+        </TouchableWithoutFeedback>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
