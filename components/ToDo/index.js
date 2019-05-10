@@ -22,13 +22,11 @@ const Text = styled.Text`
     font-size: 20px;
     margin-vertical: 20px;
     margin-horizontal: 20px;
-
-    color: ${props => (props.isCompleted ? "#bbb" : "#353839")};
 `;
 
 const CompleteText = styled(Text)`
     color : #bbb;
-    text-ecoration-line: line-through;
+    text-decoration-line: line-through;
 `
 
 const UncompleteText = styled(Text)`
@@ -54,7 +52,8 @@ const RadioUncomplete = styled(Radio)`
 export default class ToDo extends Component{
     static propTypes = {};
     render(){
-        const { id, text, isCompleted } = this.props;
+        const { id, text, isCompleted, uncomplete, complete } = this.props;
+        console.log(uncomplete, complete)
         return (
             <ContainerView>
                 { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
@@ -66,7 +65,9 @@ export default class ToDo extends Component{
                 >
                 {text}
                 </Text> */}
-                <TouchableOpacity onPressOut={console.log('touched')}>
+                <TouchableOpacity
+                    onPressOut={() => (isCompleted ? uncomplete(id) : complete(id))}
+                >
                 { isCompleted ? <RadioComplete /> : <RadioUncomplete />}
                 {/* <View
                     style={[
