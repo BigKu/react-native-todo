@@ -53,7 +53,6 @@ export default class ToDo extends Component{
     static propTypes = {};
     render(){
         const { id, text, isCompleted, uncomplete, complete } = this.props;
-        console.log(uncomplete, complete)
         return (
             <ContainerView>
                 { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }

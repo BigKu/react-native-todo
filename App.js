@@ -100,7 +100,7 @@ export default class App extends Component {
                         onSubmitEditing={this._addToDo}
                     />
                     <ScrollView>
-                        {Object.values(toDos).map(toDo => (
+                        {Object.values(toDos).sort((a,b) => a.createdAt < b.createdAt).map(toDo => (
                             <ToDo
                                 uncomplete={this._uncompleteToDo}
                                 complete={this._completeToDo} 
@@ -130,17 +130,14 @@ export default class App extends Component {
         this.setState(prevState => {
             const ID = uuidv1();
             const newToDoObject = {
-                [ID]: { id: ID, isCompleted: false, text: newToDo}
+                [ID]: { id: ID, isCompleted: false, text: newToDo, createdAt: Date.now() }
             };
             newState = {
                 ...prevState,
                 toDos: {...prevState.toDos, ...newToDoObject},
                 newToDo: ''
             };
-            const saveState = AsyncStorage.setItem(
-                "toDos",
-                JSON.stringify(newState.toDos)
-            );
+            this._saveState(newState.toDos);
             
             return { ...newState };
         });
@@ -149,6 +146,10 @@ export default class App extends Component {
     _loadToDos = async () => {
         try {
             const toDos = (await AsyncStorage.getItem("toDos")) || JSON.stringify({});
+            // await AsyncStorage.setItem(
+            //     'toDos',
+            //     JSON.stringify({})
+            // );
             const parsedToDos = JSON.parse(toDos);
             this.setState({
                 loadedToDos: true,
@@ -161,32 +162,34 @@ export default class App extends Component {
 
     _completeToDo = id => {
         this.setState(prevState => {
-            return {
+            const newState = {
                 ...prevState,
                 toDos: {
                     ...prevState.toDos,
-                [id]: {
-                    ...prevState.toDos[id],
-                    isCompleted: true
-                }
+                [id]: { ...prevState.toDos[id], isCompleted: true }
                 }
             };
+            this._saveState(newState.toDos);
+            return { ...newState };
         });
     };
 
     _uncompleteToDo = id => {
         this.setState(prevState => {
-          return {
-            ...prevState,
-            toDos: {
-              ...prevState.toDos,
-              [id]: {
-                ...prevState.toDos[id],
-                isCompleted: false
-              }
-            }
-          };
+            const newState = {
+                ...prevState,
+                toDos: {
+                    ...prevState.toDos,
+                    [id]: { ...prevState.toDos[id], isCompleted: false }
+                }
+            };
+            this._saveState(newState.toDos);
+            return { ...newState };
         });
+    };
+
+    _saveState = newToDos => {
+        const saveState = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
       };
 }
 
