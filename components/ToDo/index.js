@@ -110,23 +110,25 @@ export default class ToDo extends Component{
     static propTypes = {};
     render(){
         const { id, text, isCompleted, uncomplete, complete } = this.props;
-        const { isEditing } = this.state
+        const { isEditing, toDo } = this.state
         return (
             <ContainerView>
                 <ColumnView>
                     <TouchableOpacity onPressOut={() => (isCompleted ? uncomplete(id) : complete(id))}>
                     { isCompleted ? <RadioCompleteView /> : <RadioUncompleteView />}
                     </TouchableOpacity>
-                    { isEditing ? (<EditingTextInput
-                                    multiline={true}
-                                    onChangeText={(text)=>(console.log(text))}
-                                    onEndEditing={() => {console.log('End Editing')}}
-                                    value={text}
-                                    completedStyle={isCompleted}
-                                    />) : (
+                    { isEditing ? ( 
+                                    <EditingTextInput
+                                        multiline={true}
+                                        onChangeText={this._controlText}
+                                        onEndEditing={this._endEditing}
+                                        value={toDo}
+                                        completedStyle={isCompleted}
+                                    />
+                                    ) : (
                                     <TodoTextView completedText = {isCompleted}>{text}</TodoTextView>) }
                 </ColumnView> 
-                    { isEditing ? (<ActionsView>
+                    { isEditing ? ( <ActionsView>
                                         <TouchableOpacity onPressOut={this._endEditing}>
                                             <ActionContainerView>
                                                 <ActionText>✅</ActionText>
@@ -150,6 +152,29 @@ export default class ToDo extends Component{
             </ContainerView>
         );
     }
+
+    _startEditing = () => {
+        const { text } = this.props;
+        this.setState({
+            isEditing: true,
+            toDo: text
+        });
+    };
+
+    _controlText = text => {
+        this.setState({
+            toDo: text
+        });
+    };
+
+    _endEditing = () => {
+        const { toDo } = this.state;
+        const { updateToDo, id } = this.props;
+        updateToDo(id, toDo);
+        this.setState({
+            isEditing: false
+        });
+    };
 }
 
 
