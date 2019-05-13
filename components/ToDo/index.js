@@ -67,7 +67,8 @@ const ActionsView = styled.View`
 `
 
 const ActionContainerView = styled.View`
-    margin-horizontal: 5;
+    margin-horizontal: 10;
+    margin-vertical: 10;
 `
 
 const ActionText = styled.Text`
@@ -76,7 +77,7 @@ const ActionText = styled.Text`
 
 const EditingTextInput = styled.TextInput`
     ${todoTextCss};
-    width: ${width / 1.5}px;
+    width: ${width / 2}px;
     margin-vertical: 15px;
     padding-bottom: 5px;
     ${
@@ -124,6 +125,7 @@ export default class ToDo extends Component{
                                         onEndEditing={this._endEditing}
                                         value={toDo}
                                         completedStyle={isCompleted}
+                                        autoCorrect={false}
                                     />
                                     ) : (
                                     <TodoTextView completedText = {isCompleted}>{text}</TodoTextView>) }
