@@ -17,35 +17,34 @@ const ContainerView = styled.View`
     justify-content: space-between;
 `;
 
-const Text = styled.Text`
+const BasicText = styled.Text`
     font-weight: 600;
     font-size: 20px;
     margin-vertical: 20px;
-    margin-horizontal: 20px;
+    flex: 1;
 `;
 
-const CompleteText = styled(Text)`
+const CompleteText = styled(BasicText)`
     color : #bbb;
     text-decoration-line: line-through;
 `
 
-const UncompleteText = styled(Text)`
+const UncompleteText = styled(BasicText)`
     color :  #353839;
 `
 
-const Radio = styled.View`
+const BasicRadio = styled.View`
     width: 30px;
     height: 30px;
     border-width: 3px;
     border-radius: 15px;
-    margin-left: 30px;
     margin-right: 30px;
 `
 
-const RadioComplete = styled(Radio)`
+const RadioComplete = styled(BasicRadio)`
     border-color: #bbb;
 `
-const RadioUncomplete = styled(Radio)`
+const RadioUncomplete = styled(BasicRadio)`
     border-color: #F23657;
 `
 
@@ -55,7 +54,6 @@ export default class ToDo extends Component{
         const { id, text, isCompleted, uncomplete, complete } = this.props;
         return (
             <ContainerView>
-                { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
                 {/* <Text
                 style={[
                     styles.text,
@@ -75,6 +73,7 @@ export default class ToDo extends Component{
                     ]}
                 /> */}
                 </TouchableOpacity>
+                { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
             </ContainerView>
         );
     }

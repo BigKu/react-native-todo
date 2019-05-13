@@ -8,10 +8,8 @@
   },
   "dependencies": {
     "expo": "^32.0.0",
-    "global": "^4.3.2",
     "prop-types": "^15.7.2",
-    "react": "16.5.0",
-    "react-devtools": "^3.6.1",
+    "reacyart": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "styled-components": "^4.2.0"
   },
