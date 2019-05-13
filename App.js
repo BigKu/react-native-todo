@@ -107,6 +107,7 @@ export default class App extends Component {
                                 key={toDo.id}
                                 {...toDo}
                                 updateToDo={this._updateToDo}
+                                deleteToDo={this._deleteToDo}
                             />
                         ))}
                     </ ScrollView>
@@ -128,7 +129,7 @@ export default class App extends Component {
     _saveState = newToDos => {
         const saveState = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
     };
-    
+
     _addToDo = async () => {
         const { newToDo, toDos } = this.state;
         if (newToDo !== "") {
@@ -210,5 +211,17 @@ export default class App extends Component {
         });
     };
 
+    _deleteToDo = id => {
+        this.setState(prevState => {
+            const toDos = prevState.toDos;
+            delete toDos[id];
+            const newState = {
+                ...prevState,
+                ...toDos
+            };
+            this._saveState(newState.toDos);
+            return { ...newState };
+        });
+    };
 }
 

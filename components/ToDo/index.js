@@ -23,9 +23,9 @@ const todoTextCss = css`
     margin-vertical: 20px;
 `;
 
-const TodoText = styled.Text`
-   ${todoTextCss};
-`
+// const TodoText = styled.Text`
+//    ${todoTextCss};
+// `
 const completeTextCss = css`
     color : #bbb;
     text-decoration-line: line-through;
@@ -109,7 +109,7 @@ export default class ToDo extends Component{
 
     static propTypes = {};
     render(){
-        const { id, text, isCompleted, uncomplete, complete } = this.props;
+        const { id, text, isCompleted, uncomplete, complete, deleteToDo } = this.props;
         const { isEditing, toDo } = this.state
         return (
             <ContainerView>
@@ -142,7 +142,9 @@ export default class ToDo extends Component{
                                                 <ActionText>✏️</ActionText>
                                             </ActionContainerView>
                                         </TouchableOpacity>
-                                        <TouchableOpacity>
+                                        <TouchableOpacity onPressOut={() => {
+                                            deleteToDo(id);
+                                        }}>
                                             <ActionContainerView>
                                                 <ActionText>❌</ActionText>
                                             </ActionContainerView>
