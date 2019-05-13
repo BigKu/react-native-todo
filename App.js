@@ -126,30 +126,33 @@ export default class App extends Component {
 
     _addToDo = async () => {
         const { newToDo, toDos } = this.state;
-        let newState;
-        this.setState(prevState => {
-            const ID = uuidv1();
-            const newToDoObject = {
-                [ID]: { id: ID, isCompleted: false, text: newToDo, createdAt: Date.now() }
-            };
-            newState = {
+        if (newToDo !== "") {
+            let newState;
+            this.setState(prevState => {
+              const ID = uuidv1();
+              const newToDoObject = {
+                [ID]: {
+                  id: ID,
+                  isCompleted: false,
+                  text: newToDo,
+                  createdAt: Date.now()
+                }
+              };
+              newState = {
                 ...prevState,
-                toDos: {...prevState.toDos, ...newToDoObject},
-                newToDo: ''
-            };
-            this._saveState(newState.toDos);
-            
-            return { ...newState };
-        });
+                toDos: { ...prevState.toDos, ...newToDoObject },
+                newToDo: ""
+              };
+              this._saveState(newState.toDos);
+              return { ...newState };
+            });
+          }
     };
 
     _loadToDos = async () => {
         try {
             const toDos = (await AsyncStorage.getItem("toDos")) || JSON.stringify({});
-            // await AsyncStorage.setItem(
-            //     'toDos',
-            //     JSON.stringify({})
-            // );
+            // await AsyncStorage.removeItem("toDos");
             const parsedToDos = JSON.parse(toDos);
             this.setState({
                 loadedToDos: true,
