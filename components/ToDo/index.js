@@ -4,7 +4,7 @@ import {
     Dimensions,
     TouchableOpacity
  } from "react-native";
-import styled from "styled-components/native"
+import styled, { css } from "styled-components/native"
 
 const { height, width } = Dimensions.get('window');
 
@@ -17,20 +17,28 @@ const ContainerView = styled.View`
     justify-content: space-between;
 `;
 
-const BasicText = styled.Text`
+const BasicTextCss = css`
     font-weight: 600;
     font-size: 20px;
     margin-vertical: 20px;
-    flex: 1;
 `;
 
-const CompleteText = styled(BasicText)`
+const BasicText = styled.Text`
+   ${BasicTextCss};
+`
+const CompleteTextCss = css`
     color : #bbb;
     text-decoration-line: line-through;
 `
+const CompleteText = styled(BasicText)`
+    ${CompleteTextCss};
+`
 
+const UncompleteTextCss = css`
+    color : #353839;
+`
 const UncompleteText = styled(BasicText)`
-    color :  #353839;
+    ${UncompleteTextCss};
 `
 
 const BasicRadioView = styled.View`
@@ -65,30 +73,66 @@ const ActionContainerView = styled.View`
 const ActionText = styled.Text`
     font-size: 15px;
 `
+
+const EditingTextInput = styled.TextInput`
+    ${BasicTextCss};
+    width: ${width / 1.5}px;
+    margin-vertical: 15px;
+    padding-bottom: 5px;
+    ${
+        props => props.completedStyle
+        ? CompleteTextCss
+        : UncompleteTextCss
+    }
+
+`
 export default class ToDo extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            isEditing: true
+        };
+    }
+
     static propTypes = {};
     render(){
         const { id, text, isCompleted, uncomplete, complete } = this.props;
+        const { isEditing } = this.state
         return (
             <ContainerView>
                 <ColumnView>
                     <TouchableOpacity onPressOut={() => (isCompleted ? uncomplete(id) : complete(id))}>
                     { isCompleted ? <RadioCompleteView /> : <RadioUncompleteView />}
                     </TouchableOpacity>
-                    { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
-                </ColumnView>
-                <ActionsView>
-                    <TouchableOpacity>
-                        <ActionContainerView>
-                            <ActionText>✏️</ActionText>
-                        </ActionContainerView>
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                        <ActionContainerView>
-                            <ActionText>❌</ActionText>
-                        </ActionContainerView>
-                    </TouchableOpacity>
-                </ActionsView>
+                    { isEditing ? (<EditingTextInput
+                                    multiline={true}
+                                    onChangeText={(text)=>(console.log(text))}
+                                    onEndEditing={() => {console.log('End Editing')}}
+                                    value={text}
+                                    completedStyle={isCompleted}
+                                    />) : (isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText>) }
+                </ColumnView> 
+                    { isEditing ? (<ActionsView>
+                                        <TouchableOpacity onPressOut={this._endEditing}>
+                                            <ActionContainerView>
+                                                <ActionText>✅</ActionText>
+                                            </ActionContainerView>
+                                        </TouchableOpacity>
+                                    </ActionsView>
+                                    ) : (
+                                    <ActionsView>
+                                        <TouchableOpacity onPressOut={this._startEditing}>
+                                            <ActionContainerView>
+                                                <ActionText>✏️</ActionText>
+                                            </ActionContainerView>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity>
+                                            <ActionContainerView>
+                                                <ActionText>❌</ActionText>
+                                            </ActionContainerView>
+                                        </TouchableOpacity>
+                                    </ActionsView>
+                    )}
             </ContainerView>
         );
     }
