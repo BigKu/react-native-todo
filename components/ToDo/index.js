@@ -17,29 +17,29 @@ const ContainerView = styled.View`
     justify-content: space-between;
 `;
 
-const basicTextCss = css`
+const todoTextCss = css`
     font-weight: 600;
     font-size: 20px;
     margin-vertical: 20px;
 `;
 
-const BasicText = styled.Text`
-   ${basicTextCss};
+const TodoText = styled.Text`
+   ${todoTextCss};
 `
 const completeTextCss = css`
     color : #bbb;
     text-decoration-line: line-through;
 `
-const CompleteText = styled(BasicText)`
-    ${completeTextCss};
-`
+// const CompleteText = styled(TodoText)`
+//     ${completeTextCss};
+// `
 
 const uncompleteTextCss = css`
     color : #353839;
 `
-const UncompleteText = styled(BasicText)`
-    ${uncompleteTextCss};
-`
+// const UncompleteText = styled(TodoText)`
+//     ${uncompleteTextCss};
+// `
 
 const BasicRadioView = styled.View`
     width: 30px;
@@ -75,7 +75,7 @@ const ActionText = styled.Text`
 `
 
 const EditingTextInput = styled.TextInput`
-    ${basicTextCss};
+    ${todoTextCss};
     width: ${width / 1.5}px;
     margin-vertical: 15px;
     padding-bottom: 5px;
@@ -84,13 +84,26 @@ const EditingTextInput = styled.TextInput`
         ? completeTextCss
         : uncompleteTextCss
     }
-
 `
+
+const TodoTextView = styled.Text`
+    ${todoTextCss};
+    ${props => {
+        if(props.completedText === true) {
+            return completeTextCss;
+        } else if (props.completedText === false) {
+            return uncompleteTextCss;
+        } else {
+            return null;
+        }
+    }}
+`;
+
 export default class ToDo extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            isEditing: true
+            isEditing: false
         };
     }
 
@@ -110,7 +123,8 @@ export default class ToDo extends Component{
                                     onEndEditing={() => {console.log('End Editing')}}
                                     value={text}
                                     completedStyle={isCompleted}
-                                    />) : (isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText>) }
+                                    />) : (
+                                    <TodoTextView completedText = {isCompleted}>{text}</TodoTextView>) }
                 </ColumnView> 
                     { isEditing ? (<ActionsView>
                                         <TouchableOpacity onPressOut={this._endEditing}>
