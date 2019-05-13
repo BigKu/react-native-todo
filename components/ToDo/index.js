@@ -17,28 +17,28 @@ const ContainerView = styled.View`
     justify-content: space-between;
 `;
 
-const BasicTextCss = css`
+const basicTextCss = css`
     font-weight: 600;
     font-size: 20px;
     margin-vertical: 20px;
 `;
 
 const BasicText = styled.Text`
-   ${BasicTextCss};
+   ${basicTextCss};
 `
-const CompleteTextCss = css`
+const completeTextCss = css`
     color : #bbb;
     text-decoration-line: line-through;
 `
 const CompleteText = styled(BasicText)`
-    ${CompleteTextCss};
+    ${completeTextCss};
 `
 
-const UncompleteTextCss = css`
+const uncompleteTextCss = css`
     color : #353839;
 `
 const UncompleteText = styled(BasicText)`
-    ${UncompleteTextCss};
+    ${uncompleteTextCss};
 `
 
 const BasicRadioView = styled.View`
@@ -75,14 +75,14 @@ const ActionText = styled.Text`
 `
 
 const EditingTextInput = styled.TextInput`
-    ${BasicTextCss};
+    ${basicTextCss};
     width: ${width / 1.5}px;
     margin-vertical: 15px;
     padding-bottom: 5px;
     ${
         props => props.completedStyle
-        ? CompleteTextCss
-        : UncompleteTextCss
+        ? completeTextCss
+        : uncompleteTextCss
     }
 
 `
