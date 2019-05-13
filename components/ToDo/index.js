@@ -33,7 +33,7 @@ const UncompleteText = styled(BasicText)`
     color :  #353839;
 `
 
-const BasicRadio = styled.View`
+const BasicRadioView = styled.View`
     width: 30px;
     height: 30px;
     border-width: 3px;
@@ -41,39 +41,54 @@ const BasicRadio = styled.View`
     margin-right: 30px;
 `
 
-const RadioComplete = styled(BasicRadio)`
+const RadioCompleteView = styled(BasicRadioView)`
     border-color: #bbb;
 `
-const RadioUncomplete = styled(BasicRadio)`
+const RadioUncompleteView = styled(BasicRadioView)`
     border-color: #F23657;
 `
 
+const ColumnView = styled.View`
+    width: ${width / 2 }px;
+    flex-direction: row;
+    align-items: center;
+`
+
+const ActionsView = styled.View`
+    flex-direction: row;
+`
+
+const ActionContainerView = styled.View`
+    margin-horizontal: 5;
+`
+
+const ActionText = styled.Text`
+    font-size: 15px;
+`
 export default class ToDo extends Component{
     static propTypes = {};
     render(){
         const { id, text, isCompleted, uncomplete, complete } = this.props;
         return (
             <ContainerView>
-                {/* <Text
-                style={[
-                    styles.text,
-                    isCompleted ? styles.completedText : styles.uncompletedText
-                ]}
-                >
-                {text}
-                </Text> */}
-                <TouchableOpacity
-                    onPressOut={() => (isCompleted ? uncomplete(id) : complete(id))}
-                >
-                { isCompleted ? <RadioComplete /> : <RadioUncomplete />}
-                {/* <View
-                    style={[
-                    styles.radio,
-                    isCompleted ? styles.radioComplete : styles.radioUncomplete
-                    ]}
-                /> */}
-                </TouchableOpacity>
-                { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
+                <ColumnView>
+                    <TouchableOpacity onPressOut={() => (isCompleted ? uncomplete(id) : complete(id))}>
+                    { isCompleted ? <RadioCompleteView /> : <RadioUncompleteView />}
+                    </TouchableOpacity>
+                    { isCompleted ? <CompleteText>{text}</CompleteText> : <UncompleteText>{text}</UncompleteText> }
+                </ColumnView>
+                <ActionsView>
+                    <TouchableOpacity>
+                        <ActionContainerView>
+                            <ActionText>✏️</ActionText>
+                        </ActionContainerView>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <ActionContainerView>
+                            <ActionText>❌</ActionText>
+                        </ActionContainerView>
+                    </TouchableOpacity>
+                </ActionsView>
             </ContainerView>
         );
     }
